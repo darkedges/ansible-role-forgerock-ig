@@ -1,0 +1,6 @@
+install_root: /opt/ois
+staging_dir: /tmp/staging
+fr_user: fr
+
+openig_service: openig
+tomcat_instance_dir: "{{ install_root }}/{{ openig_service }}"
