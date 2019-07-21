@@ -4,37 +4,43 @@
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: "{{ fr_user }}"
+    owner: "{{ frig_fr_user }}"
     mode: 0755
   with_items:
-    - src: "openig.war"
-      dest: "{{ staging_dir }}/openig.war"
+    - src: "{{ frig_install_file }}"
+      dest: "{{ staging_dir }}/{{ frig_install_file }}"
 
-- name: Check that the somefile.conf exists
-  stat:
-    path: "{{ tomcat_instance_dir }}/webapps/ROOT.war"
-  register: stat_result
-
-- name: remove existing ROOT directory
+- name: create top level software directories
   file:
-    path: "{ {tomcat_instance_dir }}/webapps/ROOT"
-    state: absent
-  when: stat_result.stat.exists == False
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ frig_fr_user }}"
+    group: "{{ frig_fr_group }}"
+    mode: 0755
+  loop:
+    - "{{ tomcat_instance_dir }}"
 
-- name: Install ForgeRock Identity Gateway  to tomcat
-  become_user: "{{ fr_user }}"
-  command: "mv {{ staging_dir }}/openig.war {{ tomcat_instance_dir }}/webapps/ROOT.war"
+- name: Install ForgeRock Access Manager to tomcat
+  become: true
+  become_user: "{{ frig_fr_user }}"
+  unarchive:
+    src: "{{ staging_dir }}/{{ frig_install_file }}"
+    dest: "{{ tomcat_instance_dir }}"
+    copy: "no"
+    owner: "{{ frig_fr_user }}"
+    group: "{{ frig_fr_group }}"
+    creates: "{{ tomcat_instance_dir }}/WEB-INF"
 
-- name: "Ensure {{ openig_service }} tomcat instance is running - CentOS/RHEL 6"
+- name: "Ensure {{ openam_service }} tomcat instance is running - CentOS/RHEL 6"
   service:
-    name: "{{ openig_service }}"
+    name: "{{ tomcat_service }}"
     state: restarted
     enabled: "yes"
   when: ansible_distribution_major_version == '6'
 
-- name: "Ensure {{ openig_service }} tomcat instance is running - CentOS/RHEL 7"
+- name: "Ensure {{ openam_service }} tomcat instance is running - CentOS/RHEL 7"
   service:
-    name: "{{ openig_service }}.service"
+    name: "{{ tomcat_service }}.service"
     state: restarted
     enabled: "yes"
   when: ansible_distribution_major_version >= '7'

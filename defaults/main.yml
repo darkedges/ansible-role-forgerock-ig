@@ -2,7 +2,11 @@
 
 install_root: /opt/ois
 staging_dir: /tmp/staging
-fr_user: forgerock
+frig_fr_user: forgerock
 
-openig_service: openig
-tomcat_instance_dir: "{{ install_root }}/{{ openig_service }}"
+frig_version: "6.5.0"
+frig_version_eval: true
+frig_install_file: "IG{{ '-eval' if frig_version_eval  }}-{{ frig_version }}.war"
+
+tomcat_service: frig
+tomcat_instance_dir: "{{ install_root }}/{{ tomcat_service }}"
