@@ -5,10 +5,10 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "{{ fr_user }}"
-    mode: 0755 
+    mode: 0755
   with_items:
     - src: "openig.war"
-      dest: "{{ staging_dir }}/openig.war" 
+      dest: "{{ staging_dir }}/openig.war"
 
 - name: Check that the somefile.conf exists
   stat:
@@ -16,25 +16,25 @@
   register: stat_result
 
 - name: remove existing ROOT directory
-  file: 
-    path: "{ {tomcat_instance_dir }}/webapps/ROOT" 
+  file:
+    path: "{ {tomcat_instance_dir }}/webapps/ROOT"
     state: absent
-  when: stat_result.stat.exists == False 
+  when: stat_result.stat.exists == False
 
 - name: Install ForgeRock Identity Gateway  to tomcat
   become_user: "{{ fr_user }}"
-  command: "mv {{ staging_dir }}/openig.war {{ tomcat_instance_dir }}/webapps/ROOT.war"    
+  command: "mv {{ staging_dir }}/openig.war {{ tomcat_instance_dir }}/webapps/ROOT.war"
 
 - name: "Ensure {{ openig_service }} tomcat instance is running - CentOS/RHEL 6"
-  service: 
-    name: "{{ openig_service }}" 
-    state: restarted 
-    enabled: yes
+  service:
+    name: "{{ openig_service }}"
+    state: restarted
+    enabled: "yes"
   when: ansible_distribution_major_version == '6'
 
-- name:  "Ensure {{ openig_service }} tomcat instance is running - CentOS/RHEL 7"
-  service: 
-    name: "{{ openig_service }}.service" 
-    state: restarted 
-    enabled: yes
+- name: "Ensure {{ openig_service }} tomcat instance is running - CentOS/RHEL 7"
+  service:
+    name: "{{ openig_service }}.service"
+    state: restarted
+    enabled: "yes"
   when: ansible_distribution_major_version >= '7'

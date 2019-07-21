@@ -1,5 +1,7 @@
 # Ansible Role: ForgeRock Identity Gateway
 
+[![Build Status](https://travis-ci.com/darkedges/ansible-role-forgerock-ds.svg?branch=master)](https://travis-ci.com/darkedges/ansible-role-forgerock-ds)
+
 ## License
 
 Copyright © 2019 [DarkEdges](https://bitbucket.org/darkedges).  

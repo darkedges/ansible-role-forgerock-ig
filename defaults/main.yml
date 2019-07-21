@@ -1,6 +1,8 @@
+---
+
 install_root: /opt/ois
 staging_dir: /tmp/staging
-fr_user: fr
+fr_user: forgerock
 
 openig_service: openig
 tomcat_instance_dir: "{{ install_root }}/{{ openig_service }}"
